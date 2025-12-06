@@ -1,0 +1,238 @@
+﻿@model List<CarRental.Models.Car>
+@{
+    ViewData["Title"] = "Nos Voitures";
+}
+
+<div class="container py-5">
+    <h1 class="mb-4">Nos Véhicules</h1>
+
+    <!-- Filtres -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Ville / Agence</label>
+                    <select class="form-select" name="city">
+                        <option value="">Toutes les villes</option>
+                        <option value="casablanca">Casablanca</option>
+                        <option value="rabat">Rabat</option>
+                        <option value="marrakech">Marrakech</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Type de véhicule</label>
+                    <select class="form-select" name="type">
+                        <option value="">Tous les types</option>
+                        <option value="citadine">Citadine</option>
+                        <option value="berline">Berline</option>
+                        <option value="suv">SUV</option>
+                        <option value="utilitaire">Utilitaire</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Transmission</label>
+                    <select class="form-select" name="transmission">
+                        <option value="">Toutes</option>
+                        <option value="automatique">Automatique</option>
+                        <option value="manuelle">Manuelle</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel"></i> Filtrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Liste des voitures -->
+    <div class="row">
+        @foreach (var car in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div id="carousel-@car.Id" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            @for (int i = 0; i < car.Images.Count; i++)
+                            {
+                                <div class="carousel-item @(i == 0 ? "active" : "")">
+                                    <img src="@car.Images[i]" class="d-block w-100" style="height: 200px; object-fit: cover;" alt="@car.Name">
+                                </div>
+                            }
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-@car.Id" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carousel-@car.Id" data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title">@car.FullName</h5>
+                        <span class="badge bg-secondary mb-2">@car.Type</span>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <small><i class="bi bi-people"></i> @car.Seats places</small>
+                            </div>
+                            <div class="col-6">
+                                <small><i class="bi bi-gear"></i> @car.Transmission</small>
+                            </div>
+                            <div class="col-6">
+                                <small><i class="bi bi-fuel-pump"></i> @car.Fuel</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h4 class="text-primary mb-0">@car.PricePerDay DH/jour</h4>
+                                <small>à partir de</small>
+                            </div>
+                            <div>
+                                @if (car.IsAvailable)
+                                {
+                                    <span class="badge bg-success me-2">
+                                        <i class="bi bi-check-circle"></i> Disponible
+                                    </span>
+                                    <button class="btn btn-primary btn-sm reserve-btn"
+                                            data-car-id="@car.Id"
+                                            data-car-name="@car.FullName">
+                                        Réserver
+                                    </button>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle"></i> Indisponible
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal de connexion/inscription -->
+<div class="modal fade" id="authModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Connexion / Inscription</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" id="authTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login">
+                            Connexion
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register">
+                            Inscription
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content py-3">
+                    <div class="tab-pane fade show active" id="login" role="tabpanel">
+                        <form id="loginForm">
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mot de passe</label>
+                                <input type="password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="register" role="tabpanel">
+                        <form id="registerForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Prénom</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Nom</label>
+                                    <input type="text" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mot de passe</label>
+                                <input type="password" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Confirmer le mot de passe</label>
+                                <input type="password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            let selectedCarId = null;
+
+            $('.reserve-btn').click(function() {
+                selectedCarId = $(this).data('car-id');
+                const carName = $(this).data('car-name');
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                        // Si connecté, rediriger vers la page de réservation
+                        <text>
+                        window.location.href = '@Url.Action("Create", "Reservation")?carId=' + selectedCarId;
+                        </text>
+                }
+                else
+                {
+                        // Si non connecté, afficher le modal
+                        <text>
+                        $('#authModal').modal('show');
+                        </text>
+                }
+            });
+
+            $('#loginForm').submit(function(e) {
+                e.preventDefault();
+                // Simuler la connexion
+                localStorage.setItem('isLoggedIn', 'true');
+                $('#authModal').modal('hide');
+                if (selectedCarId) {
+                    window.location.href = '@Url.Action("Create", "Reservation")?carId=' + selectedCarId;
+                } else {
+                    window.location.href = '@Url.Action("Index", "Home")';
+                }
+            });
+
+            $('#registerForm').submit(function(e) {
+                e.preventDefault();
+                // Simuler l'inscription
+                localStorage.setItem('isLoggedIn', 'true');
+                $('#authModal').modal('hide');
+                if (selectedCarId) {
+                    window.location.href = '@Url.Action("Create", "Reservation")?carId=' + selectedCarId;
+                } else {
+                    window.location.href = '@Url.Action("Index", "Home")';
+                }
+            });
+        });
+    </script>
+}

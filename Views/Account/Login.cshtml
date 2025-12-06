@@ -1,0 +1,106 @@
+﻿@{
+    ViewData["Title"] = "Connexion - CarRental";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-box-arrow-in-right display-4 text-primary"></i>
+                        <h2 class="mt-3">Connexion</h2>
+                        <p class="text-muted">Accédez à votre espace client</p>
+                    </div>
+
+                    <form method="post" asp-action="Login" asp-controller="Account">
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" name="email" placeholder="votre@email.com" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Mot de passe</label>
+                            <input type="password" class="form-control" name="password" required>
+                            <div class="text-end mt-1">
+                                <a href="#" class="text-decoration-none small">Mot de passe oublié ?</a>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Se souvenir de moi</label>
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-box-arrow-in-right"></i> Se connecter
+                            </button>
+                        </div>
+
+                        <div class="text-center">
+                            <p class="text-muted">Vous n'avez pas de compte ?</p>
+                            <a asp-controller="Account" asp-action="Register" class="btn btn-outline-primary">
+                                <i class="bi bi-person-plus"></i> Créer un compte
+                            </a>
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <p class="text-muted small mb-2">Ou connectez-vous avec</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <button class="btn btn-outline-dark">
+                                <i class="bi bi-google"></i> Google
+                            </button>
+                            <button class="btn btn-outline-primary">
+                                <i class="bi bi-facebook"></i> Facebook
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simulation de connexion pour tester -->
+            <div class="card mt-4 border-info">
+                <div class="card-body">
+                    <h6 class="card-title text-info">
+                        <i class="bi bi-info-circle"></i> Mode test
+                    </h6>
+                    <p class="card-text small">
+                        Pour tester sans backend : cliquez sur "Se connecter" puis utilisez
+                        <code>Ctrl+F5</code> pour rafraîchir. Le menu changera.
+                    </p>
+                    <button class="btn btn-sm btn-outline-info" onclick="localStorage.setItem('isLoggedIn', 'true'); location.reload();">
+                        <i class="bi bi-check-circle"></i> Simuler la connexion
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Simulation de connexion
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', document.querySelector('input[name="email"]').value);
+
+                // Redirection
+                const returnUrl = new URLSearchParams(window.location.search).get('returnUrl');
+                if (returnUrl) {
+                    window.location.href = returnUrl;
+                } else {
+                    window.location.href = '/Account/Dashboard';
+                }
+            });
+        });
+    </script>
+}

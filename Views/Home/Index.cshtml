@@ -1,0 +1,172 @@
+﻿@{
+    ViewData["Title"] = "CarRental - Location de voitures";
+}
+
+<div class="container-fluid p-0">
+    <!-- Hero Section -->
+    <section class="hero-section bg-primary text-white py-5">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Louez votre voiture en quelques clics</h1>
+                    <p class="lead mb-4">
+                        Des véhicules disponibles partout, au meilleur prix, pour vos déplacements professionnels ou personnels.
+                    </p>
+                    <div class="search-card bg-white rounded p-4 shadow">
+                        <form asp-controller="Car" asp-action="Index" method="get">
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label text-dark">Ville de départ</label>
+                                    <select class="form-select" name="city" required>
+                                        <option value="">Sélectionnez une ville</option>
+                                        <option value="casablanca">Casablanca</option>
+                                        <option value="rabat">Rabat</option>
+                                        <option value="marrakech">Marrakech</option>
+                                        <option value="fes">Fès</option>
+                                        <option value="tanger">Tanger</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-dark">Date début</label>
+                                    <input type="date" class="form-control" name="startDate" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-dark">Date fin</label>
+                                    <input type="date" class="form-control" name="endDate" required>
+                                </div>
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="bi bi-search"></i> Voir les véhicules disponibles
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://la-voiture.fr/wp-content/uploads/2025/02/voiture-location.webp"
+                         class="img-fluid rounded shadow" alt="Voiture de location">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <div class="p-4">
+                        <i class="bi bi-car-front display-4 text-primary mb-3"></i>
+                        <h3 class="h4 mb-3">Large choix</h3>
+                        <p class="text-muted">Citadines, berlines, SUV, utilitaires...</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="p-4">
+                        <i class="bi bi-lightning-charge display-4 text-primary mb-3"></i>
+                        <h3 class="h4 mb-3">Réservation rapide</h3>
+                        <p class="text-muted">Confirmation instantanée par email</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="p-4">
+                        <i class="bi bi-headset display-4 text-primary mb-3"></i>
+                        <h3 class="h4 mb-3">Service client</h3>
+                        <p class="text-muted">Assistance 24/7</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- À propos de nous Section -->
+    <section class="py-5 bg-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                         class="img-fluid rounded shadow-lg" alt="Équipe CarRental">
+                </div>
+                <div class="col-lg-6">
+                    <h2 class="display-5 fw-bold mb-4 text-primary">À propos de nous</h2>
+                    <p class="lead mb-4">
+                        <strong>CarRental</strong> est née d'une passion pour la mobilité et d'une conviction :
+                        louer une voiture devrait être simple, transparent et accessible à tous.
+                    </p>
+                    <div class="mb-4">
+                        <p>
+                            Fondée en 2020, notre entreprise s'est rapidement imposée comme un leader
+                            dans la location de véhicules au Maroc. Notre mission ? Vous offrir une
+                            expérience de location sans stress, avec des véhicules bien entretenus
+                            et un service client d'exception.
+                        </p>
+                        <p>
+                            Nous sélectionnons rigoureusement chaque véhicule de notre flotte pour
+                            vous garantir sécurité, confort et performance. Que ce soit pour un
+                            voyage d'affaires, des vacances en famille ou un déplacement urgent,
+                            nous avons la voiture qu'il vous faut.
+                        </p>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary rounded-circle p-3 me-3">
+                                    <i class="bi bi-shield-check text-white fs-4"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Sécurité garantie</h5>
+                                    <p class="text-muted small mb-0">Véhicules contrôlés régulièrement</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary rounded-circle p-3 me-3">
+                                    <i class="bi bi-award text-white fs-4"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Prix transparents</h5>
+                                    <p class="text-muted small mb-0">Pas de frais cachés</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary rounded-circle p-3 me-3">
+                                    <i class="bi bi-geo-alt text-white fs-4"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">Présence nationale</h5>
+                                    <p class="text-muted small mb-0">10 agences au Maroc</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary rounded-circle p-3 me-3">
+                                    <i class="bi bi-people text-white fs-4"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">+15,000 clients</h5>
+                                    <p class="text-muted small mb-0">Nous font confiance</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="bg-light py-5">
+        <div class="container text-center">
+            <h2 class="mb-4">Prêt à partir ?</h2>
+            <p class="lead mb-4">Rejoignez notre communauté de clients satisfaits</p>
+            <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-lg">
+                <i class="bi bi-person-plus"></i> Créer un compte client
+            </a>
+        </div>
+    </section>
+</div>

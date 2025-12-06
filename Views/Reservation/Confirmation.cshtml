@@ -1,0 +1,103 @@
+﻿@{
+    ViewData["Title"] = "Confirmation de réservation";
+    var car = ViewBag.Car as CarRental.Models.Car;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-success shadow">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle-fill display-1 text-success"></i>
+                    </div>
+                    <h1 class="mb-3">Réservation confirmée !</h1>
+
+                    @if (car != null)
+                    {
+                        <div class="alert alert-light mb-4">
+                            <h5>@car.FullName</h5>
+                            <p class="mb-0">Votre réservation a été enregistrée avec succès.</p>
+                        </div>
+                    }
+
+                    <p class="lead mb-4">
+                        Une confirmation détaillée vous a été envoyée par email.
+                        Vous pouvez également consulter votre réservation dans votre espace client.
+                    </p>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <i class="bi bi-envelope text-primary fs-1 mb-3"></i>
+                                    <h5>Email de confirmation</h5>
+                                    <p class="text-muted small">Vérifiez votre boîte de réception</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <i class="bi bi-clock text-primary fs-1 mb-3"></i>
+                                    <h5>Traitement</h5>
+                                    <p class="text-muted small">Confirmation sous 24h</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 col-md-8 mx-auto">
+                        <a asp-controller="Account" asp-action="Dashboard" class="btn btn-primary btn-lg">
+                            <i class="bi bi-person-circle"></i> Voir mon espace client
+                        </a>
+                        <a asp-controller="Car" asp-action="Index" class="btn btn-outline-primary">
+                            <i class="bi bi-car-front"></i> Voir d'autres véhicules
+                        </a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-house"></i> Retour à l'accueil
+                        </a>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="text-muted small">
+                        <p class="mb-1">
+                            <i class="bi bi-telephone"></i> Pour toute question : 0522-XXXXXX
+                        </p>
+                        <p class="mb-0">
+                            <i class="bi bi-envelope"></i> contact@carrental.ma
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations importantes -->
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Informations importantes</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            Présentez votre permis de conduire et pièce d'identité au retrait
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            Arrivez 15 minutes avant l'heure prévue de retrait
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            La carte de crédit utilisée doit être présentée par le titulaire
+                        </li>
+                        <li class="list-group-item">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            Consultez vos emails régulièrement pour les mises à jour
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

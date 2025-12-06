@@ -1,0 +1,59 @@
+# .NET build artifacts
+bin/
+obj/
+
+# VS files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code
+.vscode/
+
+# Rider
+.idea/
+
+# User-specific files
+*.userprefs
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NVidia Nsight GPU debugger configuration
+.nsight
+
+# Local History for Visual Studio
+.localhistory/
+
+# BeatPulse healthcheck temp database
+healthchecksdb
+
+# Backup folder for Package Reference Convert tool in Visual Studio 2017
+MigrationBackup/
+
+# Ionide (cross platform F# VS Code tools) working folder
+.ionide/
+
+# wwwroot/lib (Bootstrap, jQuery seront restaurés via NuGet)
+wwwroot/lib/
+
+# Fichiers de configuration développement
+appsettings.Development.json
+
+# Fichiers temporaires
+*.tmp
+*.temp
+
+# Logs
+*.log
+logs/
+
+# Packages
+*.nupkg
+
+# OS fichiers cachés
+.DS_Store
+Thumbs.db

@@ -1,0 +1,342 @@
+﻿@model CarRental.Models.ReservationViewModel
+@using CarRental.Models
+@{
+    ViewData["Title"] = "Réserver votre véhicule";
+    
+    var car = ViewBag.SelectedCar as Car;
+    var carImage = ViewBag.CarImage as string ?? 
+                  "https://media.drivingelectric.com/image/private/s--X-WVjvBW--/f_auto,t_content-image-full-desktop@1/v1605901368/Renault_Clio_HEV_014.jpg";
+    
+    // Valeurs par défaut si car est null
+    var carName = car?.FullName ?? "Renault Clio 2022";
+    var carType = car?.Type ?? "Citadine";
+    var pricePerDay = car?.PricePerDay ?? 250;
+    var transmission = car?.Transmission ?? "Automatique";
+    var fuel = car?.Fuel ?? "Essence";
+}
+
+<div class="container py-5">
+    <h1 class="mb-4">Réserver votre véhicule</h1>
+
+    <!-- Bloc 1: Rappel du véhicule (DYNAMIQUE) -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-3">
+                    <img src="@carImage" 
+                         class="img-fluid rounded" alt="@carName" style="height: 180px; object-fit: cover;">
+                </div>
+                <div class="col-md-9">
+                    <h3 class="card-title">@carName – @carType</h3>
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <small class="text-muted d-block">Prix/jour</small>
+                            <strong class="h4 text-primary">@pricePerDay DH</strong>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-muted d-block">Type</small>
+                            <strong>@carType</strong>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-muted d-block">Boîte</small>
+                            <strong>@transmission</strong>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-muted d-block">Carburant</small>
+                            <strong>@fuel</strong>
+                        </div>
+                    </div>
+                    <input type="hidden" name="CarId" value="@Model.CarId" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" asp-action="Create">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="CarId" />
+        
+        <div class="row">
+            <!-- Bloc 2: Informations de réservation -->
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Informations de réservation</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Date de début</label>
+                                <input type="date" class="form-control" asp-for="StartDate" required id="startDate" 
+                                       min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")">
+                                <span asp-validation-for="StartDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Date de fin</label>
+                                <input type="date" class="form-control" asp-for="EndDate" required id="endDate"
+                                       min="@DateTime.Today.AddDays(2).ToString("yyyy-MM-dd")">
+                                <span asp-validation-for="EndDate" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Lieu de retrait</label>
+                                <select class="form-select" asp-for="PickupLocation" required>
+                                    <option value="">Sélectionner</option>
+                                    <option value="aeroport_casablanca">Aéroport Mohammed V - Casablanca</option>
+                                    <option value="centre_casablanca">Centre Ville - Casablanca</option>
+                                    <option value="gare_rabat">Gare Rabat-Ville</option>
+                                    <option value="aeroport_marrakech">Aéroport Marrakech-Ménara</option>
+                                </select>
+                                <span asp-validation-for="PickupLocation" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Lieu de retour</label>
+                                <select class="form-select" asp-for="ReturnLocation" id="returnLocation">
+                                    <option value="same">Même lieu</option>
+                                    <option value="aeroport_casablanca">Aéroport Mohammed V - Casablanca</option>
+                                    <option value="centre_casablanca">Centre Ville - Casablanca</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="differentLocation">
+                                    <label class="form-check-label" for="differentLocation">
+                                        Retour à un autre endroit ?
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Estimation de prix -->
+                        <div class="alert alert-info mt-4">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="mb-1">Estimation</h6>
+                                    <p class="mb-0" id="priceEstimation">Sélectionnez les dates</p>
+                                </div>
+                                <div class="text-end">
+                                    <h4 class="text-primary mb-0" id="totalPrice">0 DH</h4>
+                                    <small>pour <span id="daysCount">0</span> jours</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bloc 3: Informations client -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Informations client</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Nom</label>
+                                <input type="text" class="form-control" asp-for="LastName" required>
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Prénom</label>
+                                <input type="text" class="form-control" asp-for="FirstName" required>
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" asp-for="Email" required>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Téléphone</label>
+                                <input type="tel" class="form-control" asp-for="Phone" required>
+                                <span asp-validation-for="Phone" class="text-danger"></span>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Commentaires / demande particulière</label>
+                                <textarea class="form-control" asp-for="Comments" rows="3" placeholder="Demandes spéciales, équipements supplémentaires..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloc 4: Paiement et validation -->
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Paiement</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Choix du mode de paiement -->
+                        <div class="mb-4">
+                            <label class="form-label">Mode de paiement</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" asp-for="PaymentMethod" value="card" id="card" checked>
+                                <label class="btn btn-outline-primary" for="card">
+                                    <i class="bi bi-credit-card"></i> Carte bancaire
+                                </label>
+
+                                <input type="radio" class="btn-check" asp-for="PaymentMethod" value="paypal" id="paypal">
+                                <label class="btn btn-outline-primary" for="paypal">
+                                    <i class="bi bi-paypal"></i> PayPal
+                                </label>
+                            </div>
+                            <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+                        </div>
+
+                        <!-- Formulaire carte bancaire -->
+                        <div id="cardPayment" class="payment-form">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label">Numéro de carte</label>
+                                    <input type="text" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Date d'expiration</label>
+                                    <input type="text" class="form-control" placeholder="MM/AA" maxlength="5">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">CVV</label>
+                                    <input type="text" class="form-control" placeholder="123" maxlength="3">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Nom sur la carte</label>
+                                    <input type="text" class="form-control" placeholder="Yassine EL YASSINI">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PayPal (caché par défaut) -->
+                        <div id="paypalPayment" class="payment-form d-none">
+                            <div class="alert alert-warning">
+                                <i class="bi bi-info-circle"></i> Vous serez redirigé vers PayPal pour finaliser le paiement.
+                            </div>
+                            <div class="text-center py-4">
+                                <i class="bi bi-paypal display-4 text-primary"></i>
+                                <p class="mt-2">Cliquez sur "Confirmer la réservation" pour être redirigé vers PayPal</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Validation -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" asp-for="AcceptConditions" id="conditions" required>
+                            <label class="form-check-label" for="conditions">
+                                J'accepte les <a href="#" class="text-decoration-none">conditions de location</a>
+                            </label>
+                            <span asp-validation-for="AcceptConditions" class="text-danger d-block"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Confirmer la réservation
+                            </button>
+                        </div>
+
+                        <p class="text-muted small mt-3 mb-0">
+                            <i class="bi bi-shield-check"></i> Paiement sécurisé • Pas de frais cachés
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modal de confirmation -->
+<div class="modal fade" id="confirmationModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="mb-4">
+                    <i class="bi bi-check-circle display-1 text-success"></i>
+                </div>
+                <h3 class="mb-3">Réservation confirmée !</h3>
+                <p class="text-muted mb-4">
+                    Votre demande de location a été enregistrée. Une confirmation vous a été envoyée par email.
+                </p>
+                <div class="d-grid gap-2">
+                    <a asp-controller="Account" asp-action="Dashboard" class="btn btn-primary">
+                        Voir mes réservations
+                    </a>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">
+                        Retour à l'accueil
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            const dailyPrice = @pricePerDay;
+
+            // Calcul du prix
+            function calculatePrice() {
+                const startDate = new Date($('#startDate').val());
+                const endDate = new Date($('#endDate').val());
+
+                if (startDate && endDate && startDate < endDate) {
+                    const diffTime = Math.abs(endDate - startDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    const totalPrice = diffDays * dailyPrice;
+
+                    $('#daysCount').text(diffDays);
+                    $('#totalPrice').text(totalPrice.toFixed(0) + ' DH');
+                    $('#priceEstimation').text(`Estimation : ${totalPrice.toFixed(0)} DH pour ${diffDays} jours`);
+                } else {
+                    $('#daysCount').text('0');
+                    $('#totalPrice').text('0 DH');
+                    $('#priceEstimation').text('Sélectionnez des dates valides');
+                }
+            }
+
+            $('#startDate, #endDate').change(calculatePrice);
+            calculatePrice();
+
+            // Gestion du lieu de retour différent
+            $('#differentLocation').change(function() {
+                if ($(this).is(':checked')) {
+                    $('#returnLocation').val('aeroport_casablanca');
+                } else {
+                    $('#returnLocation').val('same');
+                }
+            });
+
+            // Gestion des modes de paiement
+            $('input[name="PaymentMethod"]').change(function() {
+                $('.payment-form').addClass('d-none');
+                const selected = $(this).val();
+                $(`#${selected}Payment`).removeClass('d-none');
+            });
+
+            // Formatage de la carte bancaire
+            $('input[placeholder*="1234 5678"]').on('input', function() {
+                let value = $(this).val().replace(/\s/g, '').replace(/\D/g, '');
+                let formatted = '';
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) formatted += ' ';
+                    formatted += value[i];
+                }
+                $(this).val(formatted.substring(0, 19));
+            });
+
+            // Soumission du formulaire
+            $('form').submit(function(e) {
+                if ($('#conditions').is(':checked')) {
+                    $('#confirmationModal').modal('show');
+                    e.preventDefault();
+                    
+                    // Simuler l'envoi
+                    setTimeout(() => {
+                        window.location.href = '@Url.Action("Confirmation", "Reservation", new { carId = Model.CarId })';
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+}
